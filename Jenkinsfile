@@ -5,7 +5,7 @@ pipeline {
             steps {
                 script {
                     // Load the builder.groovy script
-                    def builder = load 'builder.groovy'
+                    def builder = load './builder.groovy'
 
                     if (builder == null) {
                         error "Failed to load 'builder.groovy'"
