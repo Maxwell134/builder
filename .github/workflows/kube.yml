@@ -1,0 +1,30 @@
+# deploy-nginx.yml
+
+name: Deploy Nginx
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'latest'  # Use the latest version of kubectl
+
+      - name: Deploy Nginx
+        run: |
+          kubectl create deployment nginx --image=nginx:latest
+          kubectl expose deployment nginx --port=80 --target-port=80 --type=LoadBalancer
+
+      - name: Verify deployment
+        run: |
+          kubectl get pods
