@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy Nginx
         run: |
-          kubectl create deployment nginx --image=nginx:latest
+          kubectl create deployment nginx  -p 80:80 --image=nginx:latest
           kubectl expose deployment nginx --port=80 --target-port=80 --type=LoadBalancer
 
       - name: Verify deployment
