@@ -1,10 +1,14 @@
 pipeline {
     agent any
     stages {
-        stage('Run Groovy Script') {
+        stage('Deploy Application') {
             steps {
                 script {
-                    load './builder.groovy'
+                    // Load the builder.groovy script
+                    def builder = load 'builder.groovy'
+                    
+                    // Call the deploy method from builder.groovy
+                    builder.deploy 'pipeline.json'
                 }
             }
         }
