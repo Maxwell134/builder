@@ -1,0 +1,9 @@
+{
+"docker" :{
+    "image": "test",
+    "tag": "latest",
+    "container_name": "newdoc"
+
+}
+
+}
