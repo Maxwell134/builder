@@ -4,7 +4,7 @@ pipeline {
         stage('Run Groovy Script') {
             steps {
                 script {
-                    load './sample.groovy'
+                    load './builder.groovy'
                 }
             }
         }
