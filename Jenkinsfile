@@ -5,6 +5,8 @@ pipeline {
             steps {
                 // Checkout the source code repository
                 checkout scm
+                // List files in the workspace to verify the presence of sample.groovy
+                    sh 'ls -al'
             }
         }
         stage('Run Groovy Script') {
