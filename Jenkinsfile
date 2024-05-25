@@ -13,9 +13,9 @@ pipeline {
             steps {
                 script {
                     // Load and evaluate the Groovy script
-                    def groovyScript = load 'sample.groovy'
+                    def groovyScript = load './sample.groovy'
                     if (groovyScript == null) {
-                        error "Failed to load 'sample.groovy'"
+                        error "Failed to load './sample.groovy'"
                     }
                     groovyScript()
                 }
