@@ -5,7 +5,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    deploy('input.json')
+                    deploy('pipeline.json')
                 }
             }
         }
