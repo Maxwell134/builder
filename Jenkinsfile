@@ -1,4 +1,4 @@
-import groovy.json.JsonSlurperClassic
+import groovy.json.JsonSlurper
 
 pipeline {
     agent any
@@ -7,7 +7,7 @@ pipeline {
             steps {
                 script {
                     def inputFile = readFile("${env.WORKSPACE}/pipeline.json")
-                    def parserJson = new JsonSlurperClassic().parseText(inputFile)
+                    def parserJson = new JsonSlurper().parseText(inputFile)
                     println "Done reading JSON object"
                     // Make the JSON data available for the next stage
                     
