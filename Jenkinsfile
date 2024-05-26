@@ -15,13 +15,19 @@ pipeline {
             }
         }
 
-    stages {
-        stage('delete old container') {
+        stage('Delete Old Container') {
             steps {
-                sh 'docker rm -f ${IMAGE_NAME}'
-                echo 'Deleting all existing containers'
+                script {
+                    sh """
+                        if docker ps -a --format '{{.Names}}' | grep -Eq '^${IMAGE_NAME}\$'; then
+                            docker rm -f ${IMAGE_NAME}
+                        fi
+                    """
+                    echo 'Deleted old container if it existed'
+                }
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
