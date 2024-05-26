@@ -15,7 +15,7 @@ pipeline {
                     // Read the configuration from pipeline.json
                     def config = readJSON file: 'pipeline.json'
                     env.DOCKER_IMAGE = config.dockerImage
-                    env.DEPLOYMENT_PORT = config.deploymentPort
+                    env.DEPLOYMENT_PORT = config.deploymentPort.toString()
                 }
             }
         }
@@ -30,7 +30,6 @@ pipeline {
             }
         }
 
-       
         stage('Run Docker Container') {
             steps {
                 script {
