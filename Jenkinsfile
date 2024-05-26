@@ -7,7 +7,7 @@ pipeline {
                     // Load the builder.groovy script
                         gv = load 'builder.groovy'
 
-                    if (builder == null) {
+                    if (gv == null) {
                         error "Failed to load 'builder.groovy'"
                     }
 
