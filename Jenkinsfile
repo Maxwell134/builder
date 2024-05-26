@@ -1,50 +1,40 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_DETAILS = load 'sample.groovy'
+        IMAGE_NAME = "${DOCKER_DETAILS.imageName}"
+        IMAGE_TAG = "${DOCKER_DETAILS.tag}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                // Pull the latest code from the repository
                 checkout scm
-            }
-        }
-
-        stage('Read Configuration') {
-            steps {
-                script {
-                    // Read the configuration from pipeline.json
-                    def config = readJSON file: 'pipeline.json'
-                    env.DOCKER_IMAGE = config.dockerImage
-                    env.DEPLOYMENT_PORT = config.deploymentPort.toString()
-                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Load the sample.groovy script and build the Docker image
-                    def dockerScript = load 'sample.groovy'
-                    dockerScript.buildDockerImage(env.DOCKER_IMAGE, env.BUILD_NUMBER)
+                    echo "Building Docker image ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh """
+                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                    """
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    // Load the sample.groovy script and run the Docker container
-                    def dockerScript = load 'sample.groovy'
-                    dockerScript.runDockerContainer(env.DOCKER_IMAGE, env.BUILD_NUMBER, env.DEPLOYMENT_PORT)
+                    withDockerRegistry([credentialsId: 'dockerhub-credentials', url: '']) {
+                        sh """
+                            docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                        """
+                    }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            // Clean up the workspace
-            cleanWs()
         }
     }
 }
