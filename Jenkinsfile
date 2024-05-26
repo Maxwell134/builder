@@ -10,7 +10,7 @@ pipeline {
                     def parserJson = new JsonSlurperClassic().parseText(inputFile)
                     println "Done reading JSON object"
                     // Make the JSON data available for the next stage
-                    env.JSON_DATA = inputFile
+                    
                 }
             }
         }
@@ -26,10 +26,10 @@ pipeline {
                     }
 
                     // Convert JSON string back to object for the deploy method
-                    def jsonData = new JsonSlurperClassic().parseText(env.JSON_DATA)
+                    
 
                     // Call the deploy method from builder.groovy
-                    gv.deploy(jsonData)
+                    gv.deploy(inputFile)
                 }
             }
         }
