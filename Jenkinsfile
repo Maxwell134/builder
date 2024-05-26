@@ -1,6 +1,20 @@
+
+import groovy.json.JsonSlurperClassic 
+
 pipeline {
     agent any
     stages {
+
+        stage('Initialization') {
+
+            steps {
+                inputFile = readFile("{$env.WORKSPACE}/pipeline.json")
+                parserJson = new JsonSlurperClassic().parserText(inputFile)
+                println "Done reading JSON object"
+                
+            }
+        }
+        
         stage('Run Builder Script') {
             steps {
                 script {
@@ -12,7 +26,7 @@ pipeline {
                     }
 
                     // Call the deploy method from builder.groovy
-                    gv.deploy(inputFile) 
+                    gv.deploy(inputFile)
                     
                 }
             }
