@@ -1,40 +1,51 @@
-import groovy.json.JsonSlurperClassic
-
-pipeline {
+ipeline {
     agent any
+
     stages {
-        stage('Initialization') {
+        stage('Checkout') {
+            steps {
+                // Pull the latest code from the repository
+                checkout scm
+            }
+        }
+
+        stage('Read Configuration') {
             steps {
                 script {
-                    def inputFileContent = readFile("${env.WORKSPACE}/pipeline.json")
-                    def parserJson = new JsonSlurperClassic().parseText(inputFileContent)
-                    println "Done reading JSON object"
-                    // Stash the JSON content
-                    writeFile(file: 'pipeline.json', text: inputFileContent)
-                    stash includes: 'pipeline.json', name: 'jsonData'
+                    // Read the configuration from pipeline.json
+                    def config = readJSON file: 'pipeline.json'
+                    env.DOCKER_IMAGE = config.dockerImage
+                    env.DEPLOYMENT_PORT = config.deploymentPort
                 }
             }
         }
 
-        stage('Run Builder Script') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Unstash the JSON content
-                    unstash 'jsonData'
-                    def inputFileContent = readFile('pipeline.json')
-                    def jsonData = new JsonSlurperClassic().parseText(inputFileContent)
-
-                    // Load the builder.groovy script
-                    def gv = load 'builder.groovy'
-
-                    if (gv == null) {
-                        error "Failed to load 'builder.groovy'"
-                    }
-
-                    // Call the deploy method from builder.groovy
-                    gv.deploy(jsonData)
+                    // Load the sample.groovy script and build the Docker image
+                    def dockerScript = load 'sample.groovy'
+                    dockerScript.buildDockerImage(env.DOCKER_IMAGE, env.BUILD_NUMBER)
                 }
             }
+        }
+
+       
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    // Load the sample.groovy script and run the Docker container
+                    def dockerScript = load 'sample.groovy'
+                    dockerScript.runDockerContainer(env.DOCKER_IMAGE, env.BUILD_NUMBER, env.DEPLOYMENT_PORT)
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up the workspace
+            cleanWs()
         }
     }
 }
