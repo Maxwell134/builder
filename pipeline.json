@@ -1,9 +1,7 @@
+json
 {
-"docker" :{
-    "image": "test",
-    "tag": "latest",
-    "container_name": "newdoc"
-
-}
-
+    "dockerRegistry": "your-docker-registry-url",
+    "dockerCredentialsId": "your-docker-credentials-id",
+    "dockerImage": "nginx",
+    "deploymentPort": "8080"
 }
