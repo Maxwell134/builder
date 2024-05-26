@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:latest'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         DOCKER_DETAILS = load 'sample.groovy'
@@ -28,7 +33,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    withDockerRegistry([credentialsId: 'docker_login', url: '']) {
+                    withDockerRegistry([credentialsId: 'dockerhub-credentials', url: '']) {
                         sh """
                             docker push ${IMAGE_NAME}:${IMAGE_TAG}
                         """
