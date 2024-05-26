@@ -12,8 +12,7 @@ pipeline {
                     }
 
                     // Call the deploy method from builder.groovy
-                    gv.
-                    
+                    gv.deploy(inputFile) 
                     
                 }
             }
