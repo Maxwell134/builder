@@ -1,33 +1,35 @@
-
-import groovy.json.JsonSlurperClassic 
+import groovy.json.JsonSlurperClassic
 
 pipeline {
     agent any
     stages {
-
         stage('Initialization') {
-
             steps {
-                inputFile = readFile("{$env.WORKSPACE}/pipeline.json")
-                parserJson = new JsonSlurperClassic().parserText(inputFile)
-                println "Done reading JSON object"
-                
+                script {
+                    def inputFile = readFile("${env.WORKSPACE}/pipeline.json")
+                    def parserJson = new JsonSlurperClassic().parseText(inputFile)
+                    println "Done reading JSON object"
+                    // Make the JSON data available for the next stage
+                    env.JSON_DATA = inputFile
+                }
             }
         }
-        
+
         stage('Run Builder Script') {
             steps {
                 script {
                     // Load the builder.groovy script
-                        gv = load 'builder.groovy'
+                    def gv = load 'builder.groovy'
 
                     if (gv == null) {
                         error "Failed to load 'builder.groovy'"
                     }
 
+                    // Convert JSON string back to object for the deploy method
+                    def jsonData = new JsonSlurperClassic().parseText(env.JSON_DATA)
+
                     // Call the deploy method from builder.groovy
-                    gv.deploy(inputFile)
-                    
+                    gv.deploy(jsonData)
                 }
             }
         }
