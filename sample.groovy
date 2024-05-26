@@ -1,4 +1,6 @@
-// sample.groovy
+def dockerDetails = [
+    imageName: 'nginx',
+    tag: 'latest'
+]
 
-    println 'Hello, World!'
-
+return dockerDetails
