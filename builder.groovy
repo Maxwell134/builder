@@ -26,3 +26,5 @@ def deploy(inputFile) {
         throw e
     }
 }
+
+return  this 
