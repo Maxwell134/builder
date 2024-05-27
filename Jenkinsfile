@@ -5,7 +5,7 @@ pipeline {
         DOCKER_DETAILS = load 'sample.groovy'
         IMAGE_NAME = "${DOCKER_DETAILS.imageName}"
         IMAGE_TAG = "${DOCKER_DETAILS.tag}"
-        DOCKER_USERNAME = "7002370412" // Replace with your Docker Hub username
+        DOCKER_USERNAME = "${env.username}" // Replace with your Docker Hub username
     }
 
     stages {
